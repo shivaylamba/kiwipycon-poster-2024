@@ -1,0 +1,25 @@
+\begin{minted}[fontsize=\small]{python}
+# Import necessary modules from the Spin SDK
+from spin_sdk import http
+from spin_sdk.http import Request, Response
+from spin_sdk import llm
+
+
+# Define a handler class for incoming HTTP requests
+class IncomingHandler(http.IncomingHandler):
+    # Define the method to handle incoming requests
+    def handle_request(self, request: Request) -> Response:
+        # Use the LLM to generate code for array implementation in multiple languages
+        res = llm.infer_with_options(
+            "llama2-chat",  # Specify the LLM model to use
+            "write code to implement an Array in Java, C++, JavaScript and Rust",  # prompt
+            llm.InferencingParams(temperature=0.5, max_tokens=1024)  # inference parameters
+        )
+        
+        # Return the generated code as an HTTP response
+        return Response(
+            200,  # HTTP status code
+            {"content-type": "text/plain"},  # Response headers
+            bytes(res.text, "utf-8")  # Response body
+        )
+\end{minted}
